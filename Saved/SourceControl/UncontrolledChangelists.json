@@ -5,6 +5,12 @@
 			"guid": "00000000000000000000000000000000",
 			"description": "Default Uncontrolled Changelist",
 			"files": [
+				"X:/UE5Projects/cse381-ncs/Content/NCS.umap",
+				"X:/UE5Projects/cse381-ncs/Content/SphereMaterial.uasset",
+				"X:/UE5Projects/cse381-ncs/Content/BP_FPSProjectile.uasset",
+				"X:/UE5Projects/cse381-ncs/Content/Fbx_Default_Material.uasset",
+				"X:/UE5Projects/cse381-ncs/Content/Sphere.uasset",
+				"X:/UE5Projects/cse381-ncs/Content/BP_FPSCharacter.uasset",
 				"C:/Users/Spoon/Documents/School/2023-2 Fall/CSE381/cse381-ncs/Content/MyBallSpawner.uasset",
 				"C:/Users/Spoon/Documents/School/2023-2 Fall/CSE381/cse381-ncs/Content/BP_FPSGameMode.uasset",
 				"C:/Users/Spoon/Documents/School/2023-2 Fall/CSE381/cse381-ncs/Content/NCS.umap",
