@@ -3,6 +3,7 @@
 
 #include "BallSpawner.h"
 #include "Ball.h"
+#include "FPSProjectile.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -16,12 +17,12 @@ ABallSpawner::ABallSpawner()
 void ABallSpawner::SpawnBall()
 {
 	TArray<AActor*> FoundBalls;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABall::StaticClass(), FoundBalls);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFPSProjectile::StaticClass(), FoundBalls);
 	if (FoundBalls.Num() < MaxBalls)
 	{
 		FVector SpawnLocation = GetActorLocation();
 		FRotator SpawnRotation = GetActorRotation();
-		ABall* SpawnedBall = GetWorld()->SpawnActor<ABall>(ABall::StaticClass(), SpawnLocation, SpawnRotation);
+		AFPSProjectile* SpawnedBall = GetWorld()->SpawnActor<AFPSProjectile>(AFPSProjectile::StaticClass(), SpawnLocation, SpawnRotation);
 		UE_LOG(LogTemp, Warning, TEXT("Spawned ball at %s"), *SpawnLocation.ToString());
 	}
 }

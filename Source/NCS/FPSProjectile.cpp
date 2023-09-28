@@ -2,6 +2,7 @@
 
 
 #include "FPSProjectile.h"
+#include "FPSCharacter.h"
 
 // Sets default values
 AFPSProjectile::AFPSProjectile()
@@ -19,6 +20,8 @@ AFPSProjectile::AFPSProjectile()
 		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
 		CollisionComponent->OnComponentHit.AddDynamic(this, &AFPSProjectile::OnHit);
+		CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFPSProjectile::BeginOverlap);
+		CollisionComponent->SetSimulatePhysics(true);
 		// Set the sphere's collision radius.
 		CollisionComponent->InitSphereRadius(15.0f);
 		// Set the root component to be the collision component.
@@ -71,17 +74,47 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor
 	}
 }
 
+void AFPSProjectile::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// If the other actor is of type AFPSCharacter
+	if (OtherActor->IsA(AFPSCharacter::StaticClass()))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Player Hit Event!"));
+		// Cast the actor to AFPSCharacter
+		AFPSCharacter* MyPawn = Cast<AFPSCharacter>(OtherActor);
+		if (!MyPawn) return;
+		UCharacterMovementComponent* Movement = MyPawn->GetCharacterMovement();
+
+		if (Movement)
+		{
+			FVector Velocity = Movement->Velocity;
+			FVector Impulse = Velocity * 100.0f;
+
+			// Apply impulse to projectile
+			OverlappedComponent->AddImpulse(Impulse);
+		}
+	}
+}
+
 // Called when the game starts or when spawned
 void AFPSProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AFPSProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	AActor* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	if (!PlayerPawn || !PlayerPawn->IsA(AFPSCharacter::StaticClass())) return;
+	AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(PlayerPawn);
+	float Distance = FVector::Dist(GetActorLocation(), PlayerRef->GetActorLocation());
+	if (Distance < 100.0f)
+	{
+		// Destroy the projectile
+		bool succ = PlayerRef->GiveBall();
+		if (succ) Destroy();
+	}
 }
 

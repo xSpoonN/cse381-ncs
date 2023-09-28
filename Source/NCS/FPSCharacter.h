@@ -25,6 +25,9 @@ protected:
 	// Projectile class to spawn.
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<UObject> ProjectileClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<UObject> BallClass;
 
 public:	
 	// Called every frame
@@ -52,10 +55,23 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	USkeletalMeshComponent* FPSMesh;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	UStaticMeshComponent* BallMesh;
+
 	UFUNCTION()
 	void Fire();
 
+	UFUNCTION()
+	void Fire2();
+
+	UFUNCTION()
+	bool GiveBall(); // Returns true if the player was given a ball
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
-
+private:
+	bool HasBall = false;
+	bool JustFired = false;
+	void ResetFire();
 };

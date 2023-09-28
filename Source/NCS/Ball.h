@@ -35,5 +35,8 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* BallMovement;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
+	UMaterialInstanceDynamic* BallMat;
+
 	void LaunchBall(const FVector& LaunchDirection);
 };

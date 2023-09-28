@@ -17,6 +17,8 @@ ABall::ABall()
 	{
 		// Use a sphere as a simple collision representation.
 		BallCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+		BallCollision->BodyInstance.SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
+		BallCollision->SetSimulatePhysics(true);
 		// Set the sphere's collision radius.
 		BallCollision->InitSphereRadius(15.0f);
 		// Set the root component to be the collision component.
@@ -35,6 +37,23 @@ ABall::ABall()
 		BallMovement->ProjectileGravityScale = 1.0f;
 	}
 
+	if (!BallMesh)
+	{
+		BallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallMesh"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Script/Engine.StaticMesh'/Game/Sphere.Sphere'"));
+		if (Mesh.Succeeded())
+		{
+			BallMesh->SetStaticMesh(Mesh.Object);
+		}
+	}
+	static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Script/Engine.Material'/Game/SphereMaterial.SphereMaterial'"));
+	if (Material.Succeeded())
+	{
+		BallMat = UMaterialInstanceDynamic::Create(Material.Object, BallMesh);
+	}
+	BallMesh->SetMaterial(0, BallMat);
+	BallMesh->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
+	BallMesh->SetupAttachment(RootComponent);
 }
 
 void ABall::LaunchBall(const FVector& LaunchDirection)

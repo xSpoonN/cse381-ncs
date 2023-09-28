@@ -2,6 +2,8 @@
 
 
 #include "FPSCharacter.h"
+#include "FPSProjectile.h"
+#include "Ball.h"
 
 // Sets default values
 AFPSCharacter::AFPSCharacter()
@@ -25,11 +27,16 @@ AFPSCharacter::AFPSCharacter()
 	// Create a first person mesh component for the owning player.
 	FPSMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
 	check(FPSMesh != nullptr);
+	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallMesh"));
+	BallMesh->BodyInstance.SetCollisionProfileName(TEXT("NoCollision"));
+	check(BallMesh != nullptr);
 
 	// Only the owning player sees this mesh.
 	FPSMesh->SetOnlyOwnerSee(true);
+	BallMesh->SetOnlyOwnerSee(true);
 
 	// Attach the FPS mesh to the FPS camera.
+	BallMesh->SetupAttachment(FPSCameraComponent);
 	FPSMesh->SetupAttachment(FPSCameraComponent);
 
 	// Disable some environmental shadows to preserve the illusion of having a single mesh.
@@ -47,9 +54,21 @@ void AFPSCharacter::BeginPlay()
 
 	check(GEngine != nullptr);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Huh"));
-	
+
+	BallMesh->SetVisibility(false);
 }
 
+bool AFPSCharacter::GiveBall()
+{
+	if (HasBall || JustFired) return false;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Give ball!"));
+
+	// Update mesh to show ball in hands
+
+	BallMesh->SetVisibility(true);
+
+	return HasBall = true;
+}
 // Called every frame
 void AFPSCharacter::Tick(float DeltaTime)
 {
@@ -72,11 +91,13 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AFPSCharacter::StopJump);
 
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFPSCharacter::Fire);
+	/*PlayerInputComponent->BindAction("Fire2", IE_Pressed, this, &AFPSCharacter::Fire2);*/
 
 }
 
 void AFPSCharacter::Fire()
 {
+	if (!HasBall) return;
 	// Attempt to fire a projectile.
 	if (ProjectileClass)
 	{
@@ -106,10 +127,60 @@ void AFPSCharacter::Fire()
 			AFPSProjectile* Projectile = World->SpawnActor<AFPSProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
+				JustFired = true;
+				HasBall = false;
+				BallMesh->SetVisibility(false);
 				// Set the projectile's initial trajectory.
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Projectile->FireInDirection(LaunchDirection);
+
+				FTimerHandle UnusedHandle;
+				World->GetTimerManager().SetTimer(UnusedHandle, this, &AFPSCharacter::ResetFire, 0.1f, false);
 			}
+		}
+	}
+}
+
+void AFPSCharacter::ResetFire()
+{
+	JustFired = false;
+}
+
+void AFPSCharacter::Fire2()
+{
+	// Attempt to fire a projectile.
+	if (BallClass)
+	{
+		// Get the camera transform.
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+		// Set MuzzleOffset to spawn projectiles slightly in front of the camera.
+		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
+
+		// Transform MuzzleOffset from camera space to world space.
+		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+
+		// Skew the aim to be slightly upwards.
+		FRotator MuzzleRotation = CameraRotation;
+		MuzzleRotation.Pitch += 10.0f;
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			ABall* Projectile = World->SpawnActor<ABall>(BallClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			//if (Projectile)
+			//{
+			//	// Set the projectile's initial trajectory.
+			//	FVector LaunchDirection = MuzzleRotation.Vector();
+			//	Projectile->FireInDirection(LaunchDirection);
+			//}
 		}
 	}
 }
