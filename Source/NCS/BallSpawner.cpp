@@ -24,6 +24,11 @@ void ABallSpawner::SpawnBall()
 		FRotator SpawnRotation = GetActorRotation();
 		AFPSProjectile* SpawnedBall = GetWorld()->SpawnActor<AFPSProjectile>(AFPSProjectile::StaticClass(), SpawnLocation, SpawnRotation);
 		UE_LOG(LogTemp, Warning, TEXT("Spawned ball at %s"), *SpawnLocation.ToString());
+
+		if (SpawnedBall)
+		{
+			SpawnedBall->ProjectileMovementComponent->InitialSpeed = 1000.0f;
+		}
 	}
 }
 
