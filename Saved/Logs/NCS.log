@@ -20000,3 +20000,29 @@ please set the "Use T0 as ref pose" option or add them to the bind pose and reim
 [2023.10.01-23.15.45:013][660]LogContentValidation: Display: Validating /Script/Engine.Material /Game/Characters/wolfiep/mesh_0_3FBXASC046nrSG.mesh_0_3FBXASC046nrSG
 [2023.10.01-23.15.45:013][660]LogContentValidation: Display: Validating /Script/Engine.SkeletalMesh /Game/Characters/wolfiep/shoes.shoes
 [2023.10.01-23.15.45:013][660]LogContentValidation: Display: Validating /Script/UnrealEd.FbxSceneImportData /Game/Characters/wolfiep/untitled1.untitled1
+[2023.10.01-23.16.20:546][970]LogUObjectHash: Compacting FUObjectHashTables data took   1.06ms
+[2023.10.01-23.16.21:861][970]LogSlate: Window 'Delete Assets' being destroyed
+[2023.10.01-23.16.21:952][970]LogUObjectGlobals: Force Deleting 7 Package(s):
+	Asset Name: /Game/Characters/wolfie/shoes_Anim.shoes_Anim
+	Asset Type: AnimSequence
+	Asset Name: /Game/Characters/wolfie/shoes_Skeleton.shoes_Skeleton
+	Asset Type: Skeleton
+	Asset Name: /Game/Characters/wolfie/untitled1.untitled1
+	Asset Type: FbxSceneImportData
+	Asset Name: /Game/Characters/wolfie/mesh_0_3FBXASC046nrSG.mesh_0_3FBXASC046nrSG
+	Asset Type: Material
+	Asset Name: /Game/Characters/wolfie/mesh_0_3FBXASC046nrSG_002.mesh_0_3FBXASC046nrSG_002
+	Asset Type: Material
+	Asset Name: /Game/Characters/wolfie/shoes.shoes
+	Asset Type: SkeletalMesh
+	Asset Name: /Game/Characters/wolfie/FbxScene_untitled1.FbxScene_untitled1
+	Asset Type: Blueprint
+[2023.10.01-23.16.22:416][970]LogSkeletalMesh: Display: Waiting for skinned assets to be ready 0/1 (shoes) ...
+[2023.10.01-23.16.22:597][970]LogSkeletalMesh: Display: Waiting for skinned assets to be ready 0/1 (shoes) ...
+[2023.10.01-23.16.22:726][970]LogSkeletalMesh: Display: Waiting for skinned assets to be ready 0/1 (shoes) ...
+[2023.10.01-23.16.22:858][970]LogSkeletalMesh: Display: Waiting for skinned assets to be ready 0/1 (shoes) ...
+[2023.10.01-23.16.22:992][970]LogSkeletalMesh: Display: Waiting for skinned assets to be ready 0/1 (shoes) ...
+[2023.10.01-23.16.23:603][970]LogUObjectHash: Compacting FUObjectHashTables data took   1.10ms
+[2023.10.01-23.16.23:630][970]LogUObjectHash: Compacting FUObjectHashTables data took   1.17ms
+[2023.10.01-23.16.23:655][970]LogUObjectHash: Compacting FUObjectHashTables data took   0.46ms
+[2023.10.01-23.16.24:012][971]LogAutomationController: Ignoring very large delta of 3.53 seconds in calls to FAutomationControllerManager::Tick() and not penalizing unresponsive tests
