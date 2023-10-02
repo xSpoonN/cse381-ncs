@@ -16,14 +16,14 @@ ADrone::ADrone()
 	}
 	if (!CollisionComponent)
 	{
-		// Use a sphere as a simple collision representation.
-		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+		// Use a capsule as a simple collision representation.
+		CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
 		CollisionComponent->OnComponentHit.AddDynamic(this, &ADrone::OnHit);
 		CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ADrone::BeginOverlap);
-		CollisionComponent->SetSimulatePhysics(true);
-		// Set the sphere's collision radius.
-		CollisionComponent->InitSphereRadius(15.0f);
+		CollisionComponent->SetSimulatePhysics(false);
+		// Set the capsule's collision params.
+		CollisionComponent->InitCapsuleSize(50.0f, 100.0f);
 		// Set the root component to be the collision component.
 		RootComponent = CollisionComponent;
 	}
@@ -33,11 +33,11 @@ ADrone::ADrone()
 		// Use this component to drive this projectile's movement.
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		ProjectileMovementComponent->InitialSpeed = 3000.0f;
+		ProjectileMovementComponent->InitialSpeed = 0.0f;
 		ProjectileMovementComponent->MaxSpeed = 3000.0f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 		ProjectileMovementComponent->bShouldBounce = true;
-		ProjectileMovementComponent->Bounciness = 0.4f;
+		ProjectileMovementComponent->Bounciness = 0.0f;
 		ProjectileMovementComponent->ProjectileGravityScale = 1.0f;
 	}
 
@@ -79,7 +79,7 @@ void ADrone::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 	// If the other actor is of type AFPSCharacter
 	if (OtherActor->IsA(AFPSCharacter::StaticClass()))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Player Hit Event!"));
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("GAMER EVENT"));
 		// Cast the actor to AFPSCharacter
 		AFPSCharacter* MyPawn = Cast<AFPSCharacter>(OtherActor);
 		if (!MyPawn) return;
@@ -106,15 +106,15 @@ void ADrone::BeginPlay()
 void ADrone::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	AActor* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	if (!PlayerPawn || !PlayerPawn->IsA(AFPSCharacter::StaticClass())) return;
-	AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(PlayerPawn);
-	float Distance = FVector::Dist(GetActorLocation(), PlayerRef->GetActorLocation());
-	if (Distance < 100.0f)
-	{
-		// Destroy the projectile
-		bool succ = PlayerRef->GiveBall();
-		if (succ) Destroy();
-	}
+	//AActor* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	//if (!PlayerPawn || !PlayerPawn->IsA(AFPSCharacter::StaticClass())) return;
+	//AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(PlayerPawn);
+	//float Distance = FVector::Dist(GetActorLocation(), PlayerRef->GetActorLocation());
+	//if (Distance < 100.0f)
+	//{
+	//	// Destroy the projectile
+	//	bool succ = PlayerRef->GiveBall();
+	//	if (succ) Destroy();
+	//}
 }
 

@@ -28,7 +28,7 @@ public:
 
     // Sphere collision component
     UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-    USphereComponent* CollisionComponent;
+    UCapsuleComponent* CollisionComponent;
 
     // Projectile movement component
     UPROPERTY(VisibleAnywhere, Category = Movement)
