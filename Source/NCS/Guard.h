@@ -29,6 +29,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-	APawn* PlayerPawn;
+	const float Randomness = 1000.0f;
+	// APawn* PlayerPawn;
+	FVector Destination;
 	AAIController* MyController;
 };

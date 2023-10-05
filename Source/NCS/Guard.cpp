@@ -2,8 +2,8 @@
 
 
 #include "Guard.h"
+#include "NavigationSystem.h"
 #include "Kismet/GameplayStatics.h"
-#include "NavigationSystem/Public/NavigationSystem.h"
 
 // Sets default values
 AGuard::AGuard()
@@ -27,7 +27,7 @@ void AGuard::BeginPlay()
 	if (MyController)
 		MyController->Possess(this);
 
-	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	// PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	
 }
 
@@ -36,9 +36,21 @@ void AGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (PlayerPawn) {
-		MyController->MoveTo(PlayerPawn->GetActorLocation());
+	if (MyController->GetMoveStatus() == EPathFollowingStatus::Idle || MyController->GetMoveStatus() == EPathFollowingStatus::Waiting) {
+		// Generate new destination
+
+		UNavigationSystemV1* NavSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
+
+		if (NavSystem) {
+			FNavLocation ResultLocation;
+			if (NavSystem->GetRandomReachablePointInRadius(GetActorLocation(), Randomness, ResultLocation))
+				Destination = ResultLocation.Location;
+		}
 	}
+
+	MyController->MoveTo(Destination);
+
+	// if (PlayerPawn) MyController->MoveTo(PlayerPawn->GetActorLocation());
 
 }
 
