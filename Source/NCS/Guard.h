@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Pawn.h"
 #include "GameFramework/Character.h"
+#include "AIController.h"
 #include "Guard.generated.h"
 
 UCLASS()
@@ -26,4 +28,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	APawn* PlayerPawn;
+	AAIController* MyController;
 };
