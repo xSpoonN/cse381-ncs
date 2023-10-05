@@ -2,6 +2,8 @@
 
 
 #include "Guard.h"
+#include "Kismet/GameplayStatics.h"
+#include "NavigationSystem/Public/NavigationSystem.h"
 
 // Sets default values
 AGuard::AGuard()
@@ -15,6 +17,17 @@ AGuard::AGuard()
 void AGuard::BeginPlay()
 {
 	Super::BeginPlay();
+
+	/* static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/teamg/Plane.Plane'"));
+	if (SkeletalMeshAsset.Succeeded())
+		Mesh->SetSkeletalMesh(SkeletalMeshAsset.Object);
+	*/
+
+	MyController = GetController<AAIController>();
+	if (MyController)
+		MyController->Possess(this);
+
+	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	
 }
 
@@ -22,6 +35,10 @@ void AGuard::BeginPlay()
 void AGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (PlayerPawn) {
+		MyController->MoveTo(PlayerPawn->GetActorLocation());
+	}
 
 }
 
