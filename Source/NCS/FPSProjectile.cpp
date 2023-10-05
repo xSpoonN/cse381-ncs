@@ -3,6 +3,8 @@
 
 #include "FPSProjectile.h"
 #include "FPSCharacter.h"
+#include "Boss.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AFPSProjectile::AFPSProjectile()
@@ -106,7 +108,9 @@ void AFPSProjectile::BeginPlay()
 void AFPSProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	AActor* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (!PlayerController) return;
+	AActor* PlayerPawn = PlayerController->GetPawn();
 	if (!PlayerPawn || !PlayerPawn->IsA(AFPSCharacter::StaticClass())) return;
 	AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(PlayerPawn);
 	float Distance = FVector::Dist(GetActorLocation(), PlayerRef->GetActorLocation());
@@ -116,5 +120,20 @@ void AFPSProjectile::Tick(float DeltaTime)
 		bool succ = PlayerRef->GiveBall();
 		if (succ) Destroy();
 	}
+
+	TArray<AActor*> Bosses;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABoss::StaticClass(), Bosses);
+
+	for (AActor* Boss : Bosses)
+	{
+		float BDistance = FVector::Dist(GetActorLocation(), Boss->GetActorLocation());
+		if (BDistance < 100.0f)
+		{
+			// Destroy the projectile
+			bool succ = Cast<ABoss>(Boss)->GiveBall();
+			if (succ) Destroy();
+		}
+	}
+
 }
 
