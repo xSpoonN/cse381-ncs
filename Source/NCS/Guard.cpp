@@ -18,17 +18,11 @@ void AGuard::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/* static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/teamg/Plane.Plane'"));
-	if (SkeletalMeshAsset.Succeeded())
-		Mesh->SetSkeletalMesh(SkeletalMeshAsset.Object);
-	*/
-
 	MyController = GetController<AAIController>();
 	if (MyController)
 		MyController->Possess(this);
-
-	// PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Spawned guy!"));
 }
 
 // Called every frame
@@ -36,7 +30,13 @@ void AGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!MyController) return;
+	if (!MyController) {
+		MyController = GetController<AAIController>();
+		if (MyController)
+			MyController->Possess(this);
+		else
+			return;
+	}
 	if (MyController->GetMoveStatus() == EPathFollowingStatus::Idle || MyController->GetMoveStatus() == EPathFollowingStatus::Waiting) {
 		// Generate new destination
 
@@ -50,8 +50,6 @@ void AGuard::Tick(float DeltaTime)
 	}
 
 	MyController->MoveTo(Destination);
-
-	// if (PlayerPawn) MyController->MoveTo(PlayerPawn->GetActorLocation());
 
 }
 

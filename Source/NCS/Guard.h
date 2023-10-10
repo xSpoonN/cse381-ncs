@@ -30,7 +30,6 @@ public:
 
 private:
 	const float Randomness = 1000.0f;
-	// APawn* PlayerPawn;
 	FVector Destination;
 	AAIController* MyController;
 };
