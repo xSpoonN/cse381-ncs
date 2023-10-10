@@ -23,7 +23,6 @@ ABoss::ABoss()
 void ABoss::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
