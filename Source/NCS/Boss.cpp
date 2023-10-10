@@ -39,7 +39,7 @@ void ABoss::Tick(float DeltaTime)
 		FVector Direction = ch->GetActorLocation() - GetActorLocation();
 		Direction.Normalize();
 
-		Fire(Direction);
+		Firre(Direction);
 	}
 }
 
@@ -116,9 +116,21 @@ void ABoss::ResetDamage()
 	JustDamaged = false;
 }
 
-void ABoss::Fire(const FVector& FireDirection)
+void ABoss::Firre(const FVector& FireDirection)
 {
 	if (!HasBall) return;
+	GetMesh()->PlayAnimation(ThrowAnim, false);
+	FTimerHandle UnusedHandle;
+
+	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, [this, FireDirection]() {
+		Fire(FireDirection);
+		}, 0.5f, false);
+	JustFired = true;
+	HasBall = false;
+}
+
+void ABoss::Fire(const FVector& FireDirection)
+{
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("YARGGHHH FIRRREEE"));
 	// Attempt to fire a projectile.
 	if (ProjectileClass)
@@ -146,8 +158,6 @@ void ABoss::Fire(const FVector& FireDirection)
 			AFPSProjectile* Projectile = World->SpawnActor<AFPSProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
-				JustFired = true;
-				HasBall = false;
 				BallMesh->SetVisibility(false);
 				// Set the projectile's initial trajectory.
 				FVector LaunchDirection = MuzzleRotation.Vector();

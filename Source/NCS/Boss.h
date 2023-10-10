@@ -21,6 +21,9 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	UStaticMeshComponent* BallMesh;
 
+	UPROPERTY(EditDefaultsOnly, Category = Mesh)
+	UAnimSequence* ThrowAnim;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -54,5 +57,6 @@ private:
 	void ResetFire();
 	void ResetDamage();
 	bool IsPlayerVisible();
+	void Firre(const FVector& FireDirection);
 
 };
