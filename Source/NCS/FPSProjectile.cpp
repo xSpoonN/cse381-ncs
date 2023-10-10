@@ -121,7 +121,7 @@ void AFPSProjectile::Tick(float DeltaTime)
 	if (FVector::Dist(BallLocation, PlayerRef->GetActorLocation()) < 100.0f || FVector::Dist(BallLocation, PlayerAboveLoc) < 100.0f)
 	{
 		// Destroy the projectile
-		if (GetVelocity().Size() > 2000.0f) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("DAMAGE"));
+		if (GetVelocity().Size() > 2000.0f) PlayerRef->Damage();
 		bool succ = PlayerRef->GiveBall();
 		if (succ) Destroy();
 		return;

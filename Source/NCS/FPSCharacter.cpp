@@ -30,13 +30,18 @@ AFPSCharacter::AFPSCharacter()
 	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallMesh"));
 	BallMesh->BodyInstance.SetCollisionProfileName(TEXT("NoCollision"));
 	check(BallMesh != nullptr);
+	DamageFlashMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DamageFlashMesh"));
+	DamageFlashMesh->BodyInstance.SetCollisionProfileName(TEXT("NoCollision"));
+	check(DamageFlashMesh != nullptr);
 
 	// Only the owning player sees this mesh.
 	FPSMesh->SetOnlyOwnerSee(true);
 	BallMesh->SetOnlyOwnerSee(true);
+	DamageFlashMesh->SetOnlyOwnerSee(true);
 
 	// Attach the FPS mesh to the FPS camera.
 	BallMesh->SetupAttachment(FPSCameraComponent);
+	DamageFlashMesh->SetupAttachment(FPSCameraComponent);
 	FPSMesh->SetupAttachment(FPSCameraComponent);
 
 	// Disable some environmental shadows to preserve the illusion of having a single mesh.
@@ -206,4 +211,30 @@ void AFPSCharacter::StartJump()
 void AFPSCharacter::StopJump()
 {
 	bPressedJump = false;
+}
+
+void AFPSCharacter::Damage()
+{
+	if (JustDamaged) return;
+	JustDamaged = true;
+
+	if (!JustFired) {
+		UGameplayStatics::PlaySound2D(this, DamageSound);
+		DamageFlashMesh->SetVisibility(true);
+		FTimerHandle UnusedHandle1;
+		GetWorld()->GetTimerManager().SetTimer(UnusedHandle1, this, &AFPSCharacter::ResetDamageFlash, 0.15f, false);
+	}
+
+	FTimerHandle UnusedHandle;
+	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &AFPSCharacter::ResetDamage, 0.1f, false);
+}
+
+void AFPSCharacter::ResetDamage()
+{
+	JustDamaged = false;
+}
+
+void AFPSCharacter::ResetDamageFlash()
+{
+	DamageFlashMesh->SetVisibility(false);
 }
