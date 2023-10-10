@@ -40,6 +40,8 @@ public:
 
 	UFUNCTION()
 	bool GiveBall(); // Returns true if the player was given a ball
+	UFUNCTION()
+	bool Damage();
 
 	UFUNCTION()
 	void Fire(const FVector& FireDirection);
@@ -47,7 +49,10 @@ public:
 private:
 	bool HasBall = false;
 	bool JustFired = false;
+	bool JustDamaged = false;
+	int8 Health = 3;
 	void ResetFire();
+	void ResetDamage();
 	bool IsPlayerVisible();
 
 };

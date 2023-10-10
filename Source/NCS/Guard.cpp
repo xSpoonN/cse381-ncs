@@ -36,6 +36,7 @@ void AGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!MyController) return;
 	if (MyController->GetMoveStatus() == EPathFollowingStatus::Idle || MyController->GetMoveStatus() == EPathFollowingStatus::Waiting) {
 		// Generate new destination
 

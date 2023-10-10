@@ -53,6 +53,7 @@ bool ABoss::IsPlayerVisible()
 	if (!PlayerPawn || !PlayerPawn->IsA(AFPSCharacter::StaticClass())) return false;
 	AFPSCharacter* ch = Cast<AFPSCharacter>(PlayerPawn);
 	FVector EndLocation = ch->GetActorLocation();
+	if (FVector::Dist(StartLocation, EndLocation) > 4000.0f) return false;
 
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility))
 	{
@@ -76,19 +77,49 @@ void ABoss::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 bool ABoss::GiveBall()
 {
-	if (HasBall || JustFired) return false;
+	if (HasBall || JustFired || JustDamaged || Health <= 0) return false;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Give wolfie ball!"));
 
 	// Update mesh to show ball in hands
 
-	/*BallMesh->SetVisibility(true);*/
+	BallMesh->SetVisibility(true);
 
 	return HasBall = true;
+}
+
+bool ABoss::Damage()
+{
+	if (JustDamaged) return false;
+	if (Health <= 0) return true;
+	JustDamaged = true;
+	Health -= 1;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Wolfie damaged!"));
+	if (Health <= 0)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Wolfie dead!"));
+		// Update mesh to show dead wolfie
+		CharMesh->SetVisibility(false);
+		GetMesh()->SetVisibility(false);
+		BallMesh->SetVisibility(false);
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		// Destroy actor
+		Destroy();
+		return true;
+	}
+	FTimerHandle UnusedHandle;
+	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &ABoss::ResetDamage, 0.5f, false);
+	return true;
+}
+
+void ABoss::ResetDamage()
+{
+	JustDamaged = false;
 }
 
 void ABoss::Fire(const FVector& FireDirection)
 {
 	if (!HasBall) return;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("YARGGHHH FIRRREEE"));
 	// Attempt to fire a projectile.
 	if (ProjectileClass)
 	{
@@ -117,10 +148,11 @@ void ABoss::Fire(const FVector& FireDirection)
 			{
 				JustFired = true;
 				HasBall = false;
-				/*BallMesh->SetVisibility(false);*/
+				BallMesh->SetVisibility(false);
 				// Set the projectile's initial trajectory.
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Projectile->FireInDirection(LaunchDirection);
+				Projectile->SetActorScale3D(FVector(0.2f, 0.2f, 0.2f));
 
 				FTimerHandle UnusedHandle;
 				World->GetTimerManager().SetTimer(UnusedHandle, this, &ABoss::ResetFire, 0.1f, false);

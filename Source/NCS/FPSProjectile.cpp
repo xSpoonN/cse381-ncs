@@ -113,12 +113,18 @@ void AFPSProjectile::Tick(float DeltaTime)
 	AActor* PlayerPawn = PlayerController->GetPawn();
 	if (!PlayerPawn || !PlayerPawn->IsA(AFPSCharacter::StaticClass())) return;
 	AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(PlayerPawn);
-	float Distance = FVector::Dist(GetActorLocation(), PlayerRef->GetActorLocation());
-	if (Distance < 100.0f)
+	// Get location slightly above capsule
+	FVector PlayerAboveLoc = PlayerRef->GetActorLocation() + FVector(0, 0, PlayerRef->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+
+	FVector BallLocation = GetActorLocation();
+
+	if (FVector::Dist(BallLocation, PlayerRef->GetActorLocation()) < 100.0f || FVector::Dist(BallLocation, PlayerAboveLoc) < 100.0f)
 	{
 		// Destroy the projectile
+		if (GetVelocity().Size() > 2000.0f) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("DAMAGE"));
 		bool succ = PlayerRef->GiveBall();
 		if (succ) Destroy();
+		return;
 	}
 
 	TArray<AActor*> Bosses;
@@ -126,12 +132,26 @@ void AFPSProjectile::Tick(float DeltaTime)
 
 	for (AActor* Boss : Bosses)
 	{
-		float BDistance = FVector::Dist(GetActorLocation(), Boss->GetActorLocation());
-		if (BDistance < 100.0f)
+		FVector BossLocation = Boss->GetActorLocation();
+		FVector BossAboveLoc = BossLocation + FVector(0, 0, 200);
+		FVector BossMidLoc = BossLocation + FVector(0, 0, 100);
+		FVector BossBelowLoc = BossLocation + FVector(0, 0, -100);
+		if (FVector::Dist(BallLocation, BossLocation) < 100.0f ||
+			FVector::Dist(BallLocation, BossAboveLoc) < 100.0f ||
+			FVector::Dist(BallLocation, BossMidLoc) < 100.0f ||
+			FVector::Dist(BallLocation, BossBelowLoc) < 100.0f)
 		{
 			// Destroy the projectile
-			bool succ = Cast<ABoss>(Boss)->GiveBall();
-			if (succ) Destroy();
+			if (GetVelocity().Size() > 1500.0f) {
+				if (Cast<ABoss>(Boss)->Damage()) return;
+				else {
+					bool succ = Cast<ABoss>(Boss)->GiveBall();
+					if (succ) Destroy();
+				}
+			} else {
+				bool succ = Cast<ABoss>(Boss)->GiveBall();
+				if (succ) Destroy();
+			}
 		}
 	}
 
