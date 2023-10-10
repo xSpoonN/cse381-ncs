@@ -4,6 +4,7 @@
 #include "FPSProjectile.h"
 #include "FPSCharacter.h"
 #include "Boss.h"
+#include "Guard.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -129,7 +130,6 @@ void AFPSProjectile::Tick(float DeltaTime)
 
 	TArray<AActor*> Bosses;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABoss::StaticClass(), Bosses);
-
 	for (AActor* Boss : Bosses)
 	{
 		FVector BossLocation = Boss->GetActorLocation();
@@ -151,6 +151,26 @@ void AFPSProjectile::Tick(float DeltaTime)
 			} else {
 				bool succ = Cast<ABoss>(Boss)->GiveBall();
 				if (succ) Destroy();
+			}
+		}
+	}
+
+	TArray<AActor*> Guards;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGuard::StaticClass(), Guards);
+	for (AActor* Guard : Guards)
+	{
+		FVector GuardLocation = Guard->GetActorLocation();
+		FVector GuardAboveLoc = GuardLocation + FVector(0, 0, 200);
+		FVector GuardMidLoc = GuardLocation + FVector(0, 0, 100);
+		FVector GuardBelowLoc = GuardLocation + FVector(0, 0, -100);
+		if (FVector::Dist(BallLocation, GuardLocation) < 100.0f ||
+			FVector::Dist(BallLocation, GuardAboveLoc) < 100.0f ||
+			FVector::Dist(BallLocation, GuardMidLoc) < 100.0f ||
+			FVector::Dist(BallLocation, GuardBelowLoc) < 100.0f)
+		{
+			// Kill the guard if the ball is fast enough
+			if (GetVelocity().Size() > 1500.0f) {
+				Cast<AGuard>(Guard)->Destroy();
 			}
 		}
 	}
