@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AIController.h"
 #include "Boss.generated.h"
 
 UCLASS()
@@ -59,4 +60,8 @@ private:
 	bool IsPlayerVisible();
 	void Firre(const FVector& FireDirection);
 
+	// Movement
+	const float Randomness = 1000.0f;
+	FVector Destination;
+	AAIController* MyController;
 };

@@ -22,7 +22,7 @@ void AGuard::BeginPlay()
 	if (MyController)
 		MyController->Possess(this);
 	
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Spawned guy!"));
+	// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Spawned guy!"));
 }
 
 // Called every frame

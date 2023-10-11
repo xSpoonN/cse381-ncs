@@ -4,6 +4,7 @@
 #include "Boss.h"
 #include "FPSProjectile.h"
 #include "FPSCharacter.h"
+#include "NavigationSystem.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -23,6 +24,10 @@ ABoss::ABoss()
 void ABoss::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MyController = GetController<AAIController>();
+	if (MyController)
+		MyController->Possess(this);
 }
 
 // Called every frame
@@ -40,6 +45,27 @@ void ABoss::Tick(float DeltaTime)
 
 		Firre(Direction);
 	}
+
+	if (!MyController) {
+		MyController = GetController<AAIController>();
+		if (MyController)
+			MyController->Possess(this);
+		else
+			return;
+	}
+	if (MyController->GetMoveStatus() == EPathFollowingStatus::Idle || MyController->GetMoveStatus() == EPathFollowingStatus::Waiting) {
+		// Generate new destination
+
+		UNavigationSystemV1* NavSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
+
+		if (NavSystem) {
+			FNavLocation ResultLocation;
+			if (NavSystem->GetRandomReachablePointInRadius(GetActorLocation(), Randomness, ResultLocation))
+				Destination = ResultLocation.Location;
+		}
+	}
+
+	MyController->MoveTo(Destination);
 }
 
 bool ABoss::IsPlayerVisible()
