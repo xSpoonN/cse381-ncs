@@ -5,6 +5,8 @@
 			"guid": "00000000000000000000000000000000",
 			"description": "Default Uncontrolled Changelist",
 			"files": [
+				"C:/UE5Projects/cse381-ncs/Content/BP_FPSCharacter.uasset",
+				"C:/UE5Projects/cse381-ncs/Content/NCS.umap",
 				"S:/Documents/Unreal Projects/cse381-ncs/Content/Characters/teamg/FbxScene_team_g.uasset",
 				"S:/Documents/Unreal Projects/cse381-ncs/Content/NCS.umap",
 				"S:/Documents/Unreal Projects/cse381-ncs/Content/Characters/teamg/Plane_Anim_rig_metarigAction_002.uasset",
