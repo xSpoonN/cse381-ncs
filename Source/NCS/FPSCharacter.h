@@ -7,6 +7,8 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "FPSProjectile.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "FPSCharacter.generated.h"
 
 UCLASS()
@@ -28,6 +30,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<UObject> BallClass;
+
+	UPROPERTY(EditAnywhere)
+	USoundCue* DamageSound;
 
 public:	
 	// Called every frame
@@ -58,6 +63,9 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	UStaticMeshComponent* BallMesh;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	UStaticMeshComponent* DamageFlashMesh;
+
 	UFUNCTION()
 	void Fire();
 
@@ -67,11 +75,17 @@ public:
 	UFUNCTION()
 	bool GiveBall(); // Returns true if the player was given a ball
 
+	UFUNCTION()
+	void Damage();
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
 private:
 	bool HasBall = false;
 	bool JustFired = false;
+	bool JustDamaged = false;
 	void ResetFire();
+	void ResetDamage();
+	void ResetDamageFlash();
 };
