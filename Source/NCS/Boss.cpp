@@ -4,6 +4,7 @@
 #include "Boss.h"
 #include "FPSProjectile.h"
 #include "FPSCharacter.h"
+#include "FPSHUD.h"
 #include "NavigationSystem.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -13,6 +14,7 @@ ABoss::ABoss()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	AFPSHUD::OnBossSpawned();
 	CharMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
 	check(CharMesh != nullptr);
 	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallMesh"));
@@ -28,6 +30,7 @@ void ABoss::BeginPlay()
 	MyController = GetController<AAIController>();
 	if (MyController)
 		MyController->Possess(this);
+	GetCharacterMovement()->MaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed / 2;
 }
 
 // Called every frame
@@ -103,7 +106,7 @@ void ABoss::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 bool ABoss::GiveBall()
 {
 	if (HasBall || JustFired || JustDamaged || Health <= 0) return false;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Give wolfie ball!"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Give wolfie ball!"));
 
 	// Update mesh to show ball in hands
 
@@ -114,20 +117,21 @@ bool ABoss::GiveBall()
 
 bool ABoss::Damage()
 {
-	if (JustDamaged) return false;
+	if (JustDamaged || JustFired) return false;
 	if (Health <= 0) return true;
 	JustDamaged = true;
 	Health -= 1;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Wolfie damaged!"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Wolfie damaged!"));
 	if (Health <= 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Wolfie dead!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Wolfie dead!"));
 		// Update mesh to show dead wolfie
 		CharMesh->SetVisibility(false);
 		GetMesh()->SetVisibility(false);
 		BallMesh->SetVisibility(false);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		// Destroy actor
+		AFPSHUD::OnBossDestroyed();
 		Destroy();
 		return true;
 	}
@@ -156,7 +160,7 @@ void ABoss::Firre(const FVector& FireDirection)
 
 void ABoss::Fire(const FVector& FireDirection)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("YARGGHHH FIRRREEE"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("YARGGHHH FIRRREEE"));
 	// Attempt to fire a projectile.
 	if (ProjectileClass)
 	{
@@ -190,7 +194,7 @@ void ABoss::Fire(const FVector& FireDirection)
 				Projectile->SetActorScale3D(FVector(0.2f, 0.2f, 0.2f));
 
 				FTimerHandle UnusedHandle;
-				World->GetTimerManager().SetTimer(UnusedHandle, this, &ABoss::ResetFire, 0.1f, false);
+				World->GetTimerManager().SetTimer(UnusedHandle, this, &ABoss::ResetFire, 0.2f, false);
 			}
 		}
 	}

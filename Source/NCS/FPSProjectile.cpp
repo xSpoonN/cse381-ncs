@@ -5,6 +5,7 @@
 #include "FPSCharacter.h"
 #include "Boss.h"
 #include "Guard.h"
+#include "FPSHUD.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -82,7 +83,7 @@ void AFPSProjectile::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	// If the other actor is of type AFPSCharacter
 	if (OtherActor->IsA(AFPSCharacter::StaticClass()))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Player Hit Event!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Player Hit Event!"));
 		// Cast the actor to AFPSCharacter
 		AFPSCharacter* MyPawn = Cast<AFPSCharacter>(OtherActor);
 		if (!MyPawn) return;
@@ -136,10 +137,10 @@ void AFPSProjectile::Tick(float DeltaTime)
 		FVector BossAboveLoc = BossLocation + FVector(0, 0, 200);
 		FVector BossMidLoc = BossLocation + FVector(0, 0, 100);
 		FVector BossBelowLoc = BossLocation + FVector(0, 0, -100);
-		if (FVector::Dist(BallLocation, BossLocation) < 100.0f ||
-			FVector::Dist(BallLocation, BossAboveLoc) < 100.0f ||
-			FVector::Dist(BallLocation, BossMidLoc) < 100.0f ||
-			FVector::Dist(BallLocation, BossBelowLoc) < 100.0f)
+		if (FVector::Dist(BallLocation, BossLocation) < 150.0f ||
+			FVector::Dist(BallLocation, BossAboveLoc) < 150.0f ||
+			FVector::Dist(BallLocation, BossMidLoc) < 150.0f ||
+			FVector::Dist(BallLocation, BossBelowLoc) < 150.0f)
 		{
 			// Destroy the projectile
 			if (GetVelocity().Size() > 1500.0f) {
@@ -171,6 +172,7 @@ void AFPSProjectile::Tick(float DeltaTime)
 			// Kill the guard if the ball is fast enough
 			if (GetVelocity().Size() > 1500.0f) {
 				Cast<AGuard>(Guard)->Destroy();
+				AFPSHUD::OnGuardDestroyed();
 			}
 		}
 	}

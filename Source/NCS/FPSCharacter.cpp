@@ -58,7 +58,7 @@ void AFPSCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	check(GEngine != nullptr);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Huh"));
+	/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Huh"));*/
 
 	BallMesh->SetVisibility(false);
 }
@@ -66,7 +66,7 @@ void AFPSCharacter::BeginPlay()
 bool AFPSCharacter::GiveBall()
 {
 	if (HasBall || JustFired) return false;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Give ball!"));
+	/*GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Give ball!"));*/
 
 	// Update mesh to show ball in hands
 

@@ -23,6 +23,7 @@ protected:
 
 	const int32 MaxBalls = 30;
 	FTimerHandle SpawnTimerHandle;
+	FTimerHandle SpawnTimerHandle1;
 
 public:	
 	// Called every frame

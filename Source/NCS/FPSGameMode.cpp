@@ -7,5 +7,5 @@ void AFPSGameMode::StartPlay()
 {
 	Super::StartPlay();
 	check(GEngine != nullptr);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Yuh"));
+	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Yuh"));
 }

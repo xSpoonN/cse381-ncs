@@ -27,7 +27,8 @@ void ABallSpawner::SpawnBall()
 
 		if (SpawnedBall)
 		{
-			SpawnedBall->ProjectileMovementComponent->InitialSpeed = 1000.0f;
+			SpawnedBall->ProjectileMovementComponent->InitialSpeed = 500.0f;
+			SpawnedBall->ProjectileMovementComponent->MaxSpeed = 500.0f;
 		}
 	}
 }
@@ -37,7 +38,8 @@ void ABallSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ABallSpawner::SpawnBall, 1.0f, true);
+	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ABallSpawner::SpawnBall, 10.0f, true);
+	GetWorldTimerManager().SetTimer(SpawnTimerHandle1, this, &ABallSpawner::SpawnBall, 0.5f, false);
 }
 
 // Called every frame
