@@ -7,7 +7,7 @@
 
 
 int AFPSHUD::ABossCount = -5;
-int AFPSHUD::AGuardCount = -1;
+int AFPSHUD::AGuardCount = 0;
 int AFPSHUD::GuardsDestroyed = 0;
 void AFPSHUD::DrawHUD()
 {
