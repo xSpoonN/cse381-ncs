@@ -1,9 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "FPSHUD.h"
+#include "Guard.h"
+#include "Boss.h"
+#include "Kismet/GameplayStatics.h"
 
 
-int AFPSHUD::ABossCount = -1;
+int AFPSHUD::ABossCount = -5;
 int AFPSHUD::AGuardCount = -1;
 int AFPSHUD::GuardsDestroyed = 0;
 void AFPSHUD::DrawHUD()
@@ -30,6 +33,7 @@ void AFPSHUD::DrawHUD()
 		DrawText(ScoreText, FLinearColor::White, 10, 100, NULL, 7.0f);
 		return;
 	}
+
 	FString BossCountText = "Bosses Remaining: ";
 	BossCountText.AppendInt(ABossCount);
 	DrawText(BossCountText, FLinearColor::White, 10, 10, NULL, 4.0f);
@@ -41,14 +45,22 @@ void AFPSHUD::DrawHUD()
 }
 
 
-void AFPSHUD::OnBossSpawned() {
-	AFPSHUD::ABossCount++;
+void AFPSHUD::OnBossSpawned(UWorld* World) {
+	/*AFPSHUD::ABossCount++;*/
+
+	TArray<AActor*> Bosses;
+	UGameplayStatics::GetAllActorsOfClass(World, ABoss::StaticClass(), Bosses);
+	AFPSHUD::ABossCount = Bosses.Num();
 }
 void AFPSHUD::OnBossDestroyed() {
 	AFPSHUD::ABossCount--;
 }
-void AFPSHUD::OnGuardSpawned() {
-	AFPSHUD::AGuardCount++;
+void AFPSHUD::OnGuardSpawned(UWorld* World) {
+	/*AFPSHUD::AGuardCount++;*/
+
+	TArray<AActor*> Guards;
+	UGameplayStatics::GetAllActorsOfClass(World, AGuard::StaticClass(), Guards);
+	AFPSHUD::AGuardCount = Guards.Num();
 }
 void AFPSHUD::OnGuardDestroyed() {
 	AFPSHUD::AGuardCount--;

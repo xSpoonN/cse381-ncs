@@ -23,8 +23,8 @@ AFPSProjectile::AFPSProjectile()
 		// Use a sphere as a simple collision representation.
 		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
-		CollisionComponent->OnComponentHit.AddDynamic(this, &AFPSProjectile::OnHit);
-		CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFPSProjectile::BeginOverlap);
+		/*CollisionComponent->OnComponentHit.AddDynamic(this, &AFPSProjectile::OnHit);
+		CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFPSProjectile::BeginOverlap);*/
 		CollisionComponent->SetSimulatePhysics(true);
 		// Set the sphere's collision radius.
 		CollisionComponent->InitSphereRadius(15.0f);
@@ -143,7 +143,7 @@ void AFPSProjectile::Tick(float DeltaTime)
 			FVector::Dist(BallLocation, BossBelowLoc) < 150.0f)
 		{
 			// Destroy the projectile
-			if (GetVelocity().Size() > 1500.0f) {
+			if (GetVelocity().Size() > 1000.0f) {
 				if (Cast<ABoss>(Boss)->Damage()) return;
 				else {
 					bool succ = Cast<ABoss>(Boss)->GiveBall();
@@ -170,7 +170,7 @@ void AFPSProjectile::Tick(float DeltaTime)
 			FVector::Dist(BallLocation, GuardBelowLoc) < 100.0f)
 		{
 			// Kill the guard if the ball is fast enough
-			if (GetVelocity().Size() > 1500.0f) {
+			if (GetVelocity().Size() > 1000.0f) {
 				Cast<AGuard>(Guard)->Destroy();
 				AFPSHUD::OnGuardDestroyed();
 			}

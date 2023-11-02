@@ -14,7 +14,6 @@ ABoss::ABoss()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	AFPSHUD::OnBossSpawned();
 	CharMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
 	check(CharMesh != nullptr);
 	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BallMesh"));
@@ -26,6 +25,9 @@ ABoss::ABoss()
 void ABoss::BeginPlay()
 {
 	Super::BeginPlay();
+	/*GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Boss Spawn"));*/
+	/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, *GetName());*/
+	AFPSHUD::OnBossSpawned(GetWorld());
 
 	MyController = GetController<AAIController>();
 	if (MyController)

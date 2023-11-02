@@ -22,9 +22,9 @@ public:
     static int ABossCount;
     static int AGuardCount;
     static int GuardsDestroyed;
-    static void OnBossSpawned();
+    static void OnBossSpawned(UWorld* World);
     static void OnBossDestroyed();
-    static void OnGuardSpawned();
+    static void OnGuardSpawned(UWorld* World);
     static void OnGuardDestroyed();
 
 protected:

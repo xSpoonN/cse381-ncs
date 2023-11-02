@@ -12,7 +12,6 @@ AGuard::AGuard()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	AFPSHUD::OnGuardSpawned();
 
 }
 
@@ -24,6 +23,7 @@ void AGuard::BeginPlay()
 	MyController = GetController<AAIController>();
 	if (MyController)
 		MyController->Possess(this);
+	AFPSHUD::OnGuardSpawned(GetWorld());
 	
 	// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Spawned guy!"));
 }
